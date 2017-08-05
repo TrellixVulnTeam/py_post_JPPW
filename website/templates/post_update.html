@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head_title %} {{instance.title}} | {{block.super}} {% endblock head_title %}
+
+{% block content %}
+<!-- {{ block.super }} -->
+<div> {{ title }}</div>
+<div> 
+<form method="POST" action="" enctype="multipart/form-data" novalidate> {% csrf_token %}
+{{form.as_p}}
+<input type="submit" name="submit" value="Update post"> 
+</form>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,61 @@
+
+{% extends "base.html" %}
+
+{% block head_title %} {{instance.title}} | {{block.super}} {% endblock head_title %}
+{% block content %}
+
+<h1>  {{ title }} </h1>
+<!-- <div class="col-sm-8 col-sm-offset-2 ">  -->
+<form method="GET" action="">
+<div class="row">
+<div class="col-sm-6">
+    <div class="input-group">
+    <input class="form-control" type="text" name="search" placeholder="search posts" value="{{request.GET.search}}">
+    <span class="input-group-btn">
+    <input class=" btn btn-default" type="submit"  value="search">
+    </span>
+    </div>
+</div>
+</form>
+<div class="row">
+{% for obj in dataset %}
+<div class="col-sm-6 col-sm-offset-3"> 
+	<div class="thumbnail">
+	{% if obj.image %}
+      <img src="{{obj.image.url}}" class="img-responsive" />
+    {% endif %}  
+      <div class="caption">
+        <h3>{% if obj.draft %}<span style="color:red">Draft</span>{% endif %} 
+
+        {% if obj.publish > today %}<span style="color:red">Future post</span> {% endif %} 
+        <a href='{% url "posts:detail" slug=obj.slug %}'> {{ obj.title }} </a><small>
+        {{obj.timestapm | timesince}}</small></h3>
+       <!--  <p class="content-mark">{{obj.get_markdown |safe }}</p> --> <!-- safe is handeld in models.py -->
+        <p class="post-detail-item">{{obj.get_markdown }}</p>
+        <p><a href='{% url "posts:detail" slug=obj.slug %}' class="btn btn-primary" role="button">View</a></p>
+      </div>
+    </div>		 
+</div>
+
+{% cycle "" "</div><div class='row'> "%}
+ {% endfor %}
+ </div>
+<!--  </div> -->
+
+<div class="pagination">
+    <span class="step-links">
+        {% if dataset.has_previous %}
+            <a href="?{{page_request_var}}={{ dataset.previous_page_number }} {% if request.GET.search %}&search={{request.GET.search}} {% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ dataset.number }} of {{ dataset.paginator.num_pages }}.
+        </span>
+
+        {% if dataset.has_next %}
+            <a href="?{{page_request_var}}={{ dataset.next_page_number }}{% if request.GET.search %} &search={{request.GET.search}} {% endif %}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}
